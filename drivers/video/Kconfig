@@ -2079,6 +2079,30 @@ config FB_NUC900
         ---help---
           Frame buffer driver for the built-in LCD controller in the Nuvoton
           NUC900 processor
+          
+          
+config FB_S5PV210
+	tristate "S5PV210 LCD framebuffer support"
+	depends on FB && ARCH_S5PV210
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	---help---
+	  Frame buffer driver for the built-in LCD controller in the Samsung
+	  S5PV210 processor.
+
+	  This driver is also available as a module ( = code which can be
+	  inserted and removed from the running kernel whenever you want). The
+	  module will be called s5pv210fb. If you want to compile it as a module,
+	  say M here and read <file:Documentation/kbuild/modules.txt>.
+
+	  If unsure, say N.
+config FB_S5PV210_DEBUG
+	bool "S5PV210 lcd debug messages"
+	depends on FB_S5PV210
+	help
+	  Turn on debugging messages. Note that you can set/unset at run time
+	  through sysfs
 
 config GPM1040A0_320X240
         bool "Giantplus Technology GPM1040A0 320x240 Color TFT LCD"

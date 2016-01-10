@@ -183,6 +183,37 @@ void __init s3c_fb_set_platdata(struct s3c_fb_platdata *pd)
 }
 #endif /* CONFIG_S3C_DEV_FB */
 
+
+#ifdef	CONFIG_FB_S5PV210
+#include <plat/fb-s5pv210.h>
+static struct resource s5pv210_fb_resource[] = {
+	[0] = DEFINE_RES_MEM(S3C_PA_FB, SZ_16K),
+	[1] = DEFINE_RES_IRQ(IRQ_LCD_VSYNC),
+	[2] = DEFINE_RES_IRQ(IRQ_LCD_FIFO),
+	[3] = DEFINE_RES_IRQ(IRQ_LCD_SYSTEM),
+};
+
+struct platform_device smdkv210_lcd_lte480wv = {
+	.name			= "s5pv210-lcd",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(s5pv210_fb_resource),
+	.resource	= s5pv210_fb_resource,
+	.dev			= {
+		.parent		= &s3c_device_fb.dev,
+		
+		.dma_mask		= &samsung_device_dma_mask,
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	}
+};
+
+void __init s5p_fb_set_platdata(struct s5pv210_fb_mach_info *pd)
+{
+	s3c_set_platdata(pd, sizeof(struct s5pv210_fb_mach_info),
+	&smdkv210_lcd_lte480wv);
+}
+
+#endif
+
 /* FIMC */
 
 #ifdef CONFIG_S5P_DEV_FIMC0

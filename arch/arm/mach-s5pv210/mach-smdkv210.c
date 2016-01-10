@@ -39,6 +39,11 @@
 #include <plat/devs.h>
 #include <plat/cpu.h>
 #include <plat/adc.h>
+
+#ifdef	CONFIG_FB_S5PV210
+#include <plat/fb-s5pv210.h>
+#endif
+
 #include <linux/platform_data/touchscreen-s3c2410.h>
 #include <linux/platform_data/ata-samsung_cf.h>
 #include <linux/platform_data/i2c-s3c2410.h>
@@ -158,8 +163,8 @@ static void smdkv210_lte480wv_set_power(struct plat_lcd_data *pd,
 {
 	if (power) {
 #if !defined(CONFIG_BACKLIGHT_PWM)
-		gpio_request_one(S5PV210_GPD0(3), GPIOF_OUT_INIT_HIGH, "GPD0");
-		gpio_free(S5PV210_GPD0(3));
+		gpio_request_one(S5PV210_GPD0(1), GPIOF_OUT_INIT_HIGH, "GPD0");
+		gpio_free(S5PV210_GPD0(1));
 #endif
 
 		/* fire nRESET on power up */
@@ -180,32 +185,43 @@ static void smdkv210_lte480wv_set_power(struct plat_lcd_data *pd,
 	}
 }
 
-static struct plat_lcd_data smdkv210_lcd_lte480wv_data = {
+#ifdef	CONFIG_FB_S5PV210
+extern struct platform_device smdkv210_lcd_lte480wv;
+extern void s5p_fb_set_platdata(struct s5pv210_fb_mach_info *pd);
+static struct s5pv210_fb_mach_info mach_smdkv210_info __initdata = {
 	.set_power	= smdkv210_lte480wv_set_power,
+	.lcd_reg = {
+		.vidcon0 = ((1<<4)),
+		.vidcon1 = ((1<<6) | (1<<5)),
+	},
+	.gpf0con	= 0x22222222,
+	.gpf0con_mask	= 0xffffffff,
+	.gpf1con	= 0x22222222,
+	.gpf1con_mask	= 0xffffffff,
+	.gpf2con	= 0x22222222,
+	.gpf2con_mask	= 0xffffffff,
+	.gpf3con	= 0x22222222,
+	.gpf3con_mask	= 0xffffffff,
 };
-
-static struct platform_device smdkv210_lcd_lte480wv = {
-	.name			= "platform-lcd",
-	.dev.parent		= &s3c_device_fb.dev,
-	.dev.platform_data	= &smdkv210_lcd_lte480wv_data,
-};
+#endif
 
 static struct s3c_fb_pd_win smdkv210_fb_win0 = {
 	.max_bpp	= 32,
-	.default_bpp	= 24,
+	.default_bpp	= 32,
 	.xres		= 800,
 	.yres		= 480,
 };
 
 static struct fb_videomode smdkv210_lcd_timing = {
-	.left_margin	= 13,
-	.right_margin	= 8,
-	.upper_margin	= 7,
-	.lower_margin	= 5,
-	.hsync_len	= 3,
-	.vsync_len	= 1,
+	.left_margin	= 26,
+	.right_margin	= 270,
+	.upper_margin	= 14,
+	.lower_margin	= 22,
+	.hsync_len	= 20,
+	.vsync_len	= 10,
 	.xres		= 800,
 	.yres		= 480,
+	.pixclock	= 5,
 };
 
 static struct s3c_fb_platdata smdkv210_lcd0_pdata __initdata = {
@@ -248,7 +264,9 @@ static struct platform_device *smdkv210_devices[] __initdata = {
 	&samsung_asoc_idma,
 	&samsung_device_keypad,
 	&smdkv210_dm9000,
+#ifdef	CONFIG_FB_S5PV210
 	&smdkv210_lcd_lte480wv,
+#endif
 };
 
 static void __init smdkv210_dm9000_init(void)
@@ -327,6 +345,10 @@ static void __init smdkv210_machine_init(void)
 	s3c_ide_set_platdata(&smdkv210_ide_pdata);
 
 	s3c_fb_set_platdata(&smdkv210_lcd0_pdata);
+	
+#ifdef	CONFIG_FB_S5PV210	
+	s5p_fb_set_platdata(&mach_smdkv210_info);
+#endif
 
 	samsung_bl_set(&smdkv210_bl_gpio_info, &smdkv210_bl_data);
 
