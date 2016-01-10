@@ -47,6 +47,9 @@
 #ifdef	CONFIG_S5P_DEV_USB_EHCI
 #include <linux/platform_data/usb-ehci-s5p.h>
 #endif
+#ifdef	CONFIG_S5P_DEV_USB_OHCI
+#include <linux/platform_data/usb-s5pv210.h>
+#endif
 
 #include <linux/platform_data/touchscreen-s3c2410.h>
 #include <linux/platform_data/ata-samsung_cf.h>
@@ -233,6 +236,11 @@ extern struct platform_device s5p_device_ehci;
 static struct s5p_ehci_platdata s5p_ehci_platdata;
 extern void s5p_ehci_set_platdata(struct s5p_ehci_platdata *pd);
 #endif
+#ifdef CONFIG_S5P_DEV_USB_OHCI
+extern struct platform_device s5p_device_ohci;
+static struct s5pv210_ohci_platdata s5p_ohci_platdata;
+extern void s5p_ohci_set_platdata(struct s5p_ohci_platdata *pd);
+#endif
 
 static struct s3c_fb_platdata smdkv210_lcd0_pdata __initdata = {
 	.win[0]		= &smdkv210_fb_win0,
@@ -279,6 +287,9 @@ static struct platform_device *smdkv210_devices[] __initdata = {
 #endif
 #ifdef	CONFIG_S5P_DEV_USB_EHCI
 	&s5p_device_ehci,
+#endif
+#ifdef	CONFIG_S5P_DEV_USB_OHCI
+	&s5p_device_ohci,
 #endif
 };
 
@@ -364,6 +375,9 @@ static void __init smdkv210_machine_init(void)
 #endif
 #ifdef CONFIG_S5P_DEV_USB_EHCI
     s5p_ehci_set_platdata(&s5p_ehci_platdata);
+#endif
+#ifdef CONFIG_S5P_DEV_USB_OHCI
+    s5p_ohci_set_platdata(&s5p_ohci_platdata);
 #endif
 
 	samsung_bl_set(&smdkv210_bl_gpio_info, &smdkv210_bl_data);

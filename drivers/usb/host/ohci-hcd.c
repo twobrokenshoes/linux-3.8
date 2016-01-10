@@ -1110,6 +1110,11 @@ MODULE_LICENSE ("GPL");
 #define PLATFORM_DRIVER		exynos_ohci_driver
 #endif
 
+#ifdef CONFIG_USB_OHCI_S5PV210
+#include "ohci-s5pv210.c"
+#define	PLATFORM_DRIVER		s5pv210_ohci_driver
+#endif
+
 #ifdef CONFIG_USB_OHCI_HCD_OMAP1
 #include "ohci-omap.c"
 #define OMAP1_PLATFORM_DRIVER	ohci_hcd_omap_driver
