@@ -44,6 +44,10 @@
 #include <plat/fb-s5pv210.h>
 #endif
 
+#ifdef	CONFIG_S5P_DEV_USB_EHCI
+#include <linux/platform_data/usb-ehci-s5p.h>
+#endif
+
 #include <linux/platform_data/touchscreen-s3c2410.h>
 #include <linux/platform_data/ata-samsung_cf.h>
 #include <linux/platform_data/i2c-s3c2410.h>
@@ -224,6 +228,12 @@ static struct fb_videomode smdkv210_lcd_timing = {
 	.pixclock	= 5,
 };
 
+#ifdef CONFIG_S5P_DEV_USB_EHCI
+extern struct platform_device s5p_device_ehci;
+static struct s5p_ehci_platdata s5p_ehci_platdata;
+extern void s5p_ehci_set_platdata(struct s5p_ehci_platdata *pd);
+#endif
+
 static struct s3c_fb_platdata smdkv210_lcd0_pdata __initdata = {
 	.win[0]		= &smdkv210_fb_win0,
 	.vtiming	= &smdkv210_lcd_timing,
@@ -266,6 +276,9 @@ static struct platform_device *smdkv210_devices[] __initdata = {
 	&smdkv210_dm9000,
 #ifdef	CONFIG_FB_S5PV210
 	&smdkv210_lcd_lte480wv,
+#endif
+#ifdef	CONFIG_S5P_DEV_USB_EHCI
+	&s5p_device_ehci,
 #endif
 };
 
@@ -348,6 +361,9 @@ static void __init smdkv210_machine_init(void)
 	
 #ifdef	CONFIG_FB_S5PV210	
 	s5p_fb_set_platdata(&mach_smdkv210_info);
+#endif
+#ifdef CONFIG_S5P_DEV_USB_EHCI
+    s5p_ehci_set_platdata(&s5p_ehci_platdata);
 #endif
 
 	samsung_bl_set(&smdkv210_bl_gpio_info, &smdkv210_bl_data);

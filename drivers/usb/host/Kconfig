@@ -201,6 +201,7 @@ config USB_EHCI_SH
 config USB_EHCI_S5P
        boolean "S5P EHCI support"
        depends on USB_EHCI_HCD && PLAT_S5P
+       select S5P_DEV_USB_EHCI
        help
 	 Enable support for the S5P SOC's on-chip EHCI controller.
 

@@ -128,7 +128,7 @@ static int s5p_ehci_probe(struct platform_device *pdev)
 	}
 
 	s5p_ehci->hcd = hcd;
-	s5p_ehci->clk = devm_clk_get(&pdev->dev, "usbhost");
+	s5p_ehci->clk = devm_clk_get(&pdev->dev, "usb-host");
 
 	if (IS_ERR(s5p_ehci->clk)) {
 		dev_err(&pdev->dev, "Failed to get usbhost clock\n");
@@ -170,7 +170,9 @@ static int s5p_ehci_probe(struct platform_device *pdev)
 	ehci->caps = hcd->regs;
 
 	/* DMA burst Enable */
-	writel(EHCI_INSNREG00_ENABLE_DMA_BURST, EHCI_INSNREG00(hcd->regs));
+//	writel(EHCI_INSNREG00_ENABLE_DMA_BURST, EHCI_INSNREG00(hcd->regs));
+	writel(0x000E0000, hcd->regs + 0x90);
+	writel(0x00400040, hcd->regs + 0x94);
 
 	err = usb_add_hcd(hcd, irq, IRQF_SHARED);
 	if (err) {

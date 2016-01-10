@@ -1448,7 +1448,7 @@ void __init s3c24xx_udc_set_platdata(struct s3c2410_udc_mach_info *pd)
 #ifdef CONFIG_S5P_DEV_USB_EHCI
 static struct resource s5p_ehci_resource[] = {
 	[0] = DEFINE_RES_MEM(S5P_PA_EHCI, SZ_256),
-	[1] = DEFINE_RES_IRQ(IRQ_USB_HOST),
+	[1] = DEFINE_RES_IRQ(IRQ_UHOST),
 };
 
 struct platform_device s5p_device_ehci = {
@@ -1459,7 +1459,7 @@ struct platform_device s5p_device_ehci = {
 	.dev		= {
 		.dma_mask		= &samsung_device_dma_mask,
 		.coherent_dma_mask	= DMA_BIT_MASK(32),
-	}
+	},
 };
 
 void __init s5p_ehci_set_platdata(struct s5p_ehci_platdata *pd)
