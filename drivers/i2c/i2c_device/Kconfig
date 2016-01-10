@@ -1,0 +1,15 @@
+#
+# i2c device config
+#
+
+menu "I2C Device Support"
+
+comment "I2C device driver such as 24c02"
+
+config AT24C02
+	tristate "AT24C02 Device Driver"
+	depends on I2C_S3C2410 && ARCH_S5PV210
+	help
+	  This will include at24c02 chip driver.
+
+endmenu
